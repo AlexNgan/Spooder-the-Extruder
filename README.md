@@ -19,4 +19,7 @@ Function to heat the extruder and reverses motor on the filament intake. Prompts
 On print pause or manual stop, the printer will display the line number the print was aborted at. This will allow one to better troubleshoot or restart a particular print job.
 
 ## Networking Features and Monitoring: NOT YET
+
+I plan on adding an ESP01 ESP8266 wifi module to the Trigorilla board. Thingiverse [resource](https://www.thingiverse.com/thing:2798147).
+
 ## UI Optimization on the LCD Display: NOT YET
