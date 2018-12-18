@@ -2,11 +2,11 @@
 
 This is a repository of code I've modified for use with an Anycubic Kossel Plus 3D printer. Built in code based on the Marlin 1.1.8 framework.
 
-While this printer is very good mechanically (the quality and speed of the pprints are astounding), there is a lot to be desired in the firmware available online. Additionally, there are some physical modifications that can be made to improve the machine.
+While this printer is very good mechanically (the quality and speed of the prints are astounding), there is a lot to be desired in the firmware available online. Additionally, there are some physical modifications that can be made to improve the machine.
 
 # Marlin 3D Printer Firmware
 
-Additional documentation can be found at [The Marlin Documentation Project](https://www.marlinfw.org/).
+The majority of this code is modified from the general [Marlin 3D Printer Firmware](https://github.com/MarlinFirmware/Marlin code.) At this point, Marlin 2.0.x has been released but is unpolished, so I've decided to make changes in an older, more stable release. Additional documentation can be found at [The Marlin Documentation Project](https://www.marlinfw.org/).
 
 
 # Custom Functions and Features
@@ -15,6 +15,9 @@ Additional documentation can be found at [The Marlin Documentation Project](http
 Function to heat the extruder and reverses motor on the filament intake. Prompts user to manually retract the loaded filament as well during this process. Click the control knob when displayed prompt has been completed. The filament intake motor will now drive forwards to help feed new filament in. Click once for cooldown procedures at this point. Click twice at any time to end function.
 
 ## Emergency Stop: NOT YET
+
+Either a special click sequence on the knob or a specialized button.
+
 ## Detailed Print Progress: NOT YET
 
 On print pause or manual stop, the printer will display the line number the print was aborted at. This will allow one to better troubleshoot or restart a particular print job.
