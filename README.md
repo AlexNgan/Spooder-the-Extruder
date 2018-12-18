@@ -35,3 +35,4 @@ I plan on adding an ESP01 ESP8266 wifi module to the Trigorilla board. Thingiver
 - [ ] Camera mount
 - [ ] LED light strips
 - [ ] TPU filament extruder and software settings
+- [x] Knob for manual filament feeding/retracting.
