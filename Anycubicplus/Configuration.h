@@ -113,7 +113,7 @@
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-#define CUSTOM_MACHINE_NAME "Anycubic plus"
+#define CUSTOM_MACHINE_NAME "Spooder the Extruder :)"
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -313,8 +313,7 @@
 // If your PID_dT is the default, and correct for your hardware/configuration, that means 7.689Hz,
 // which is fine for driving a square wave into a resistive load and does not significantly impact you FET heating.
 // This also works fine on a Fotek SSR-10DA Solid State Relay into a 250W heater.
-// If your configuration is significantly different than this and you don't understand the issues involved, you probably
-// shouldn't use bed PID until someone else verifies your hardware works.
+// If your configuration is significantly different than this and you don't understand the issues involved, you probably shouldn't use bed PID until someone else verifies your hardware works.
 // If this is enabled, find your own PID constants below.
 //#define PIDTEMPBED
 
@@ -424,7 +423,7 @@
   #define DELTA_RADIUS (DELTA_SMOOTH_ROD_OFFSET-(DELTA_EFFECTOR_OFFSET)-(DELTA_CARRIAGE_OFFSET))
 
   // Print surface diameter/2 minus unreachable space (avoid collisions with vertical towers).
-  #define DELTA_PRINTABLE_RADIUS 115
+  #define DELTA_PRINTABLE_RADIUS 115 - 2 // mm
 
   // Delta calibration menu
   // uncomment to add three points calibration menu option.
@@ -587,19 +586,20 @@
 // #define X_PROBE_OFFSET_FROM_EXTRUDER 10
 // #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
 //
-//    +-- BACK ---+
-//    |           |
-//  L |    (+) P  | R <-- probe (20,20)
-//  E |           | I
-//  F | (-) N (+) | G <-- nozzle (10,10)
-//  T |           | H
-//    |    (-)    | T
-//    |           |
-//    O-- FRONT --+
+//                    +-- BACK ---+
+//                    |                 |
+//                 L |    (+) P     | R <-- probe (20,20)
+//                 E |                 | I
+//                 F |  (-) N (+) | G <-- nozzle (10,10)
+//                 T |                 | H
+//                    |      (-)       | T
+//                    |                 |
+//                   O-- FRONT --+
 //  (0,0)
-#define X_PROBE_OFFSET_FROM_EXTRUDER 0     // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER -10   // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER -3.5  // Z offset: -below +above  [the nozzle]
+
+#define X_PROBE_OFFSET_FROM_EXTRUDER 38     // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER -28   // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER 0  // Z offset: -below +above  [the nozzle]
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 4000
@@ -843,18 +843,12 @@
  *   You specify the XY coordinates of all 3 points.
  *   The result is a single tilted plane. Best for a flat bed.
  *
- * - LINEAR*
- * - 线性
- * 调查几个点在网格中。
- * 你指定矩形和采样点的密度。
+ * - LINEAR
  *   Probe several points in a grid.
  *   You specify the rectangle and the density of sample points.
  *   The result is a single tilted plane. Best for a flat bed.
  *
  * - BILINEAR
- * *——双线性 DELTA
-*调查几个点在网格中。
-*你指定矩形和采样点的密度。
  *   Probe several points in a grid.
  *   You specify the rectangle and the density of sample points.
  *   The result is a mesh, best for large or uneven beds.
@@ -878,7 +872,7 @@
   #define ABL_GRID_POINTS_Y ABL_GRID_POINTS_X
 
   // Set the boundaries for probing (where the probe can reach).
-  #define DELTA_PROBEABLE_RADIUS (DELTA_PRINTABLE_RADIUS - 30)
+  #define DELTA_PROBEABLE_RADIUS (DELTA_PRINTABLE_RADIUS - 50) // mm
   #define LEFT_PROBE_BED_POSITION -(DELTA_PROBEABLE_RADIUS)
   #define RIGHT_PROBE_BED_POSITION DELTA_PROBEABLE_RADIUS
   #define FRONT_PROBE_BED_POSITION -(DELTA_PROBEABLE_RADIUS)
@@ -938,7 +932,7 @@
 // For DELTA this is the top-center of the Cartesian print volume.
 //#define MANUAL_X_HOME_POS 0
 //#define MANUAL_Y_HOME_POS 0
-#define MANUAL_Z_HOME_POS 295.2 // Distance between the nozzle to printbed after homing
+#define MANUAL_Z_HOME_POS 306.2 // Original:  295.2; Distance between the nozzle to printbed after homing
 
 // Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
 //
@@ -948,7 +942,7 @@
 // - If stepper drivers time out, it will need X and Y homing again before Z homing.
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
-//#define Z_SAFE_HOMING
+#define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
   #define Z_SAFE_HOMING_X_POINT ((X_MIN_POS + X_MAX_POS) / 2)    // X point for Z homing when homing all axis (G28).
@@ -1113,7 +1107,7 @@
 //  - Total time printing
 //
 // This information can be viewed by the M78 command.
-//#define PRINTCOUNTER
+#define PRINTCOUNTER
 
 //=============================================================================
 //============================= LCD and SD support ============================
@@ -1126,11 +1120,11 @@
 //
 // Here you may choose the language used by Marlin on the LCD menus, the following
 // list of languages are available:
-//    en, an, bg, ca, cn, cz, de, el, el-gr, es, eu, fi, fr, gl, hr, it,
-//    kana, kana_utf8, nl, pl, pt, pt_utf8, pt-br, pt-br_utf8, ru, tr, uk, test
+//    en, test
 //
-// :{ 'en':'English', 'an':'Aragonese', 'bg':'Bulgarian', 'ca':'Catalan', 'cn':'Chinese', 'cz':'Czech', 'de':'German', 'el':'Greek', 'el-gr':'Greek (Greece)', 'es':'Spanish', 'eu':'Basque-Euskera', 'fi':'Finnish', 'fr':'French', 'gl':'Galician', 'hr':'Croatian', 'it':'Italian', 'kana':'Japanese', 'kana_utf8':'Japanese (UTF8)', 'nl':'Dutch', 'pl':'Polish', 'pt':'Portuguese', 'pt-br':'Portuguese (Brazilian)', 'pt-br_utf8':'Portuguese (Brazilian UTF8)', 'pt_utf8':'Portuguese (UTF8)', 'ru':'Russian', 'tr':'Turkish', 'uk':'Ukrainian', 'test':'TEST' }
+// :{ 'en':'English', 'test':'TEST' }
 //
+
 #define LCD_LANGUAGE en
 
 //
@@ -1173,9 +1167,7 @@
 //
 // SD CARD
 //
-// SD Card support is disabled by default. If your controller has an SD slot,
-// you must uncomment the following option or it won't work.
-//
+
 #define SDSUPPORT
 
 //
@@ -1295,114 +1287,12 @@
 //#define REPRAPWORLD_GRAPHICAL_LCD
 
 //
-// Activate one of these if you have a Panucatt Devices
-// Viki 2.0 or mini Viki with Graphic LCD
-// http://panucatt.com
-//
-//#define VIKI2
-//#define miniVIKI
-
-//
-// Adafruit ST7565 Full Graphic Controller.
-// https://github.com/eboston/Adafruit-ST7565-Full-Graphic-Controller/
-//
-//#define ELB_FULL_GRAPHIC_CONTROLLER
-
-//
 // RepRapDiscount Smart Controller.
 // http://reprap.org/wiki/RepRapDiscount_Smart_Controller
 //
 // Note: Usually sold with a white PCB.
 //
 #define REPRAP_DISCOUNT_SMART_CONTROLLER
-
-//
-// GADGETS3D G3D LCD/SD Controller
-// http://reprap.org/wiki/RAMPS_1.3/1.4_GADGETS3D_Shield_with_Panel
-//
-// Note: Usually sold with a blue PCB.
-//
-//#define G3D_PANEL
-
-//
-// RepRapDiscount FULL GRAPHIC Smart Controller
-// http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
-//
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
-
-//
-// MakerLab Mini Panel with graphic
-// controller and SD support - http://reprap.org/wiki/Mini_panel
-//
-//#define MINIPANEL
-
-//
-// RepRapWorld REPRAPWORLD_KEYPAD v1.1
-// http://reprapworld.com/?products_details&products_id=202&cPath=1591_1626
-//
-// REPRAPWORLD_KEYPAD_MOVE_STEP sets how much should the robot move when a key
-// is pressed, a value of 10.0 means 10mm per click.
-//
-//#define REPRAPWORLD_KEYPAD
-//#define REPRAPWORLD_KEYPAD_MOVE_STEP 1.0
-
-//
-// RigidBot Panel V1.0
-// http://www.inventapart.com/
-//
-//#define RIGIDBOT_PANEL
-
-//
-// BQ LCD Smart Controller shipped by
-// default with the BQ Hephestos 2 and Witbox 2.
-//
-//#define BQ_LCD_SMART_CONTROLLER
-
-//
-// CONTROLLER TYPE: I2C
-//
-// Note: These controllers require the installation of Arduino's LiquidCrystal_I2C
-// library. For more info: https://github.com/kiyoshigawa/LiquidCrystal_I2C
-//
-
-//
-// Elefu RA Board Control Panel
-// http://www.elefu.com/index.php?route=product/product&product_id=53
-//
-//#define RA_CONTROL_PANEL
-
-//
-// Sainsmart YW Robot (LCM1602) LCD Display
-//
-//#define LCD_I2C_SAINSMART_YWROBOT
-
-//
-// Generic LCM1602 LCD adapter
-//
-//#define LCM1602
-
-//
-// PANELOLU2 LCD with status LEDs,
-// separate encoder and click inputs.
-//
-// Note: This controller requires Arduino's LiquidTWI2 library v1.2.3 or later.
-// For more info: https://github.com/lincomatic/LiquidTWI2
-//
-// Note: The PANELOLU2 encoder click input can either be directly connected to
-// a pin (if BTN_ENC defined to != -1) or read through I2C (when BTN_ENC == -1).
-//
-//#define LCD_I2C_PANELOLU2
-
-//
-// Panucatt VIKI LCD with status LEDs,
-// integrated click & L/R/U/D buttons, separate encoder inputs.
-//
-//#define LCD_I2C_VIKI
-
-//
-// SSD1306 OLED full graphics generic display
-//
-//#define U8GLIB_SSD1306
 
 //
 // SAV OLEd LCD module support using either SSD1306 or SH1106 based LCD modules
