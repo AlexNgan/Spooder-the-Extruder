@@ -39,3 +39,12 @@ I plan on adding an ESP01 ESP8266 wifi module to the Trigorilla board. Thingiver
 - [ ] LED light strips
 - [ ] TPU filament extruder and software settings
 - [x] Knob for manual filament feeding/retracting.
+
+# Technical documentation
+## Control Board
+The Anycubic Kossel Plus utilizes a Tri-Gorilla board. Requires a CP2102 driver for the associated communication chip.
+- Main control chip: ATMEGA256016AU, programmable using ICSP.
+- Input Voltage: 10V to 30V
+- Standby Current: 35mA ±5mA
+- Supports five stepper motors.
+- Dimensions: 125 x 82 mm
