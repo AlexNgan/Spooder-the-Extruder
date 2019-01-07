@@ -48,3 +48,6 @@ The Anycubic Kossel Plus utilizes a Tri-Gorilla board. Requires a CP2102 driver 
 - Standby Current: 35mA ±5mA
 - Supports five stepper motors.
 - Dimensions: 125 x 82 mm
+
+##G-Code Commands Reference List
+- [Wikipedia](https://reprap.org/wiki/G-code#M500:_Store_parameters_in_EEPROM)
