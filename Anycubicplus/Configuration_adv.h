@@ -237,7 +237,7 @@
  * Multiple extruders can be assigned to the same pin in which case
  * the fan will turn on when any selected extruder is above the threshold.
  */
-#define E0_AUTO_FAN_PIN -1
+//#define E0_AUTO_FAN_PIN -1
 #define E1_AUTO_FAN_PIN -1
 #define E2_AUTO_FAN_PIN -1
 #define E3_AUTO_FAN_PIN -1
@@ -256,6 +256,22 @@
 #define FANMUX0_PIN -1
 #define FANMUX1_PIN -1
 #define FANMUX2_PIN -1
+
+/**
+ * M355 Case Light on-off / brightness
+ */
+//#define CASE_LIGHT_ENABLE
+#if ENABLED(CASE_LIGHT_ENABLE)
+  //#define CASE_LIGHT_PIN 4                  // Override the default pin if needed
+  #define INVERT_CASE_LIGHT false             // Set true if Case Light is ON when pin is LOW
+  #define CASE_LIGHT_DEFAULT_ON true          // Set default power-up state on
+  #define CASE_LIGHT_DEFAULT_BRIGHTNESS 105   // Set default power-up brightness (0-255, requires PWM pin)
+  //#define MENU_ITEM_CASE_LIGHT              // Add a Case Light option to the LCD main menu
+  //#define CASE_LIGHT_USE_NEOPIXEL           // Use Neopixel LED as case light, requires NEOPIXEL_LED.
+  #if ENABLED(CASE_LIGHT_USE_NEOPIXEL)
+    #define CASE_LIGHT_NEOPIXEL_COLOR { 255, 255, 255, 255 } // { Red, Green, Blue, White }
+  #endif
+#endif
 
 //===========================================================================
 //============================ Mechanical Settings ==========================
@@ -368,8 +384,8 @@
 // Homing hits each endstop, retracts by these distances, then does a slower bump.
 #define X_HOME_BUMP_MM 5
 #define Y_HOME_BUMP_MM 5
-#define Z_HOME_BUMP_MM 2
-#define HOMING_BUMP_DIVISOR { 2, 2, 4 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
+#define Z_HOME_BUMP_MM 5 // deltas need the same for all three axes
+#define HOMING_BUMP_DIVISOR { 10, 10, 10 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 //#define QUICK_HOME                     // If homing includes X and Y, do a diagonal move initially
 
 // When G28 is called, this option will make Y home before X
@@ -394,7 +410,7 @@
 // Default stepper release if idle. Set to 0 to deactivate.
 // Steppers will shut down DEFAULT_STEPPER_DEACTIVE_TIME seconds after the last move when DISABLE_INACTIVE_? is true.
 // Time can be set by M18 and M84.
-#define DEFAULT_STEPPER_DEACTIVE_TIME 120
+#define DEFAULT_STEPPER_DEACTIVE_TIME 60
 #define DISABLE_INACTIVE_X true
 #define DISABLE_INACTIVE_Y true
 #define DISABLE_INACTIVE_Z true  // set to false if the nozzle will fall down on your printed part when print has finished.
@@ -408,7 +424,8 @@
 // @section lcd
 
 #if ENABLED(ULTIPANEL)
-  #define MANUAL_FEEDRATE {50*60, 50*60, 4*60, 60} // Feedrates for manual moves along X, Y, Z, E from panel
+  #define MANUAL_FEEDRATE_XYZ 50*60
+  #define MANUAL_FEEDRATE { MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, MANUAL_FEEDRATE_XYZ, 60 } // Feedrates for manual moves along X, Y, Z, E from panel
   #define ULTIPANEL_FEEDMULTIPLY  // Comment to disable setting feedrate multiplier via encoder
 #endif
 
@@ -418,7 +435,8 @@
 #define DEFAULT_MINSEGMENTTIME        20000
 
 // If defined the movements slow down when the look ahead buffer is only half full
-#define SLOWDOWN
+// (don't use SLOWDOWN with DELTA because DELTA generates hundreds of segments per second)
+//#define SLOWDOWN
 
 // Frequency limit
 // See nophead's blog for more info
@@ -470,7 +488,7 @@
  *    M909, M910 & LCD - only PRINTRBOARD_REVF & RIGIDBOARD_V2
  */
 //#define PWM_MOTOR_CURRENT { 1300, 1300, 1250 }          // Values in milliamps
-//#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+#define DIGIPOT_MOTOR_CURRENT { 135,135,135,135,135 }   // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define DAC_MOTOR_CURRENT_DEFAULT { 70, 80, 90, 80 }    // Default drive percent - X, Y, Z, E axis
 
 // Use an I2C based DIGIPOT (e.g., Azteeg X3 Pro)
@@ -508,16 +526,16 @@
 // @section lcd
 
 // Include a page of printer information in the LCD Main Menu
-//#define LCD_INFO_MENU
+#define LCD_INFO_MENU
 
 // Scroll a longer status message into view
-//#define STATUS_MESSAGE_SCROLLING
+#define STATUS_MESSAGE_SCROLLING
 
 // On the Info Screen, display XY with one decimal place when possible
 //#define LCD_DECIMAL_SMALL_XY
 
 // The timeout (in ms) to return to the status screen from sub-menus
-//#define LCD_TIMEOUT_TO_STATUS 15000
+#define LCD_TIMEOUT_TO_STATUS 15000
 
 // Add an 'M73' G-code to set the current percentage
 //#define LCD_SET_PROGRESS_MANUALLY
@@ -625,7 +643,7 @@
   //#define LONG_FILENAME_HOST_SUPPORT
 
   // Enable this option to scroll long filenames in the SD card menu
-  //#define SCROLL_LONG_FILENAMES
+  #define SCROLL_LONG_FILENAMES
 
   /**
    * This option allows you to abort SD printing when any endstop is triggered.
@@ -728,13 +746,13 @@
  *
  * Warning: Does not respect endstops!
  */
-//#define BABYSTEPPING
+#define BABYSTEPPING
 #if ENABLED(BABYSTEPPING)
   //#define BABYSTEP_XY              // Also enable X/Y Babystepping. Not supported on DELTA!
   #define BABYSTEP_INVERT_Z false    // Change if Z babysteps should go the other way
   #define BABYSTEP_MULTIPLICATOR 1   // Babysteps are very small. Increase for faster motion.
   //#define BABYSTEP_ZPROBE_OFFSET   // Enable to combine M851 and Babystepping
-  //#define DOUBLECLICK_FOR_Z_BABYSTEPPING // Double-click on the Status Screen for Z Babystepping.
+  #define DOUBLECLICK_FOR_Z_BABYSTEPPING // Double-click on the Status Screen for Z Babystepping.
   #define DOUBLECLICK_MAX_INTERVAL 1250 // Maximum interval between clicks, in milliseconds.
                                         // Note: Extra time may be added to mitigate controller latency.
   //#define BABYSTEP_ZPROBE_GFX_OVERLAY // Enable graphical overlay on Z-offset editor
@@ -767,17 +785,11 @@
 // @section leveling
 
 #if ENABLED(MESH_BED_LEVELING) || ENABLED(AUTO_BED_LEVELING_UBL)
-#if ENABLED(DELTA)
-    #define UBL_MESH_MIN_X (X_MIN_POS + UBL_MESH_INSET)
-    #define UBL_MESH_MAX_X (X_MAX_POS - (UBL_MESH_INSET))
-    #define UBL_MESH_MIN_Y (Y_MIN_POS + UBL_MESH_INSET)
-    #define UBL_MESH_MAX_Y (Y_MAX_POS - (UBL_MESH_INSET))
-  #else
-    #define UBL_MESH_MIN_X UBL_MESH_INSET
-    #define UBL_MESH_MAX_X (X_BED_SIZE - (UBL_MESH_INSET))
-    #define UBL_MESH_MIN_Y UBL_MESH_INSET
-    #define UBL_MESH_MAX_Y (Y_BED_SIZE - (UBL_MESH_INSET))
-  #endif
+  // Override the mesh area if the automatic (max) area is too large
+  //#define MESH_MIN_X MESH_INSET
+  //#define MESH_MIN_Y MESH_INSET
+  //#define MESH_MAX_X X_BED_SIZE - (MESH_INSET)
+  //#define MESH_MAX_Y Y_BED_SIZE - (MESH_INSET)
 #endif
 
 // @section extras
@@ -968,28 +980,28 @@
  * Requires NOZZLE_PARK_FEATURE.
  * This feature is required for the default FILAMENT_RUNOUT_SCRIPT.
  */
-//#define ADVANCED_PAUSE_FEATURE
+#define ADVANCED_PAUSE_FEATURE
 #if ENABLED(ADVANCED_PAUSE_FEATURE)
   #define PAUSE_PARK_RETRACT_FEEDRATE         60  // (mm/s) Initial retract feedrate.
   #define PAUSE_PARK_RETRACT_LENGTH            2  // (mm) Initial retract.
                                                   // This short retract is done immediately, before parking the nozzle.
-  #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     10  // (mm/s) Unload filament feedrate. This can be pretty fast.
+  #define FILAMENT_CHANGE_UNLOAD_FEEDRATE     40  // (mm/s) Unload filament feedrate. This can be pretty fast.
   #define FILAMENT_CHANGE_UNLOAD_ACCEL        25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-  #define FILAMENT_CHANGE_UNLOAD_LENGTH      100  // (mm) The length of filament for a complete unload.
+  #define FILAMENT_CHANGE_UNLOAD_LENGTH      750  // (mm) The length of filament for a complete unload.
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
                                                   //   Set to 0 for manual unloading.
   #define FILAMENT_CHANGE_SLOW_LOAD_FEEDRATE   6  // (mm/s) Slow move when starting load.
   #define FILAMENT_CHANGE_SLOW_LOAD_LENGTH     0  // (mm) Slow length, to allow time to insert material.
                                                   // 0 to disable start loading and skip to fast load only
-  #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE   6  // (mm/s) Load filament feedrate. This can be pretty fast.
+  #define FILAMENT_CHANGE_FAST_LOAD_FEEDRATE  40  // (mm/s) Load filament feedrate. This can be pretty fast.
   #define FILAMENT_CHANGE_FAST_LOAD_ACCEL     25  // (mm/s^2) Lower acceleration may allow a faster feedrate.
-  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH     0  // (mm) Load length of filament, from extruder gear to nozzle.
+  #define FILAMENT_CHANGE_FAST_LOAD_LENGTH   650  // (mm) Load length of filament, from extruder gear to nozzle.
                                                   //   For Bowden, the full length of the tube and nozzle.
                                                   //   For direct drive, the full length of the nozzle.
-  //#define ADVANCED_PAUSE_CONTINUOUS_PURGE       // Purge continuously up to the purge length until interrupted.
+  #define ADVANCED_PAUSE_CONTINUOUS_PURGE         // Purge continuously up to the purge length until interrupted.
   #define ADVANCED_PAUSE_PURGE_FEEDRATE        3  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
-  #define ADVANCED_PAUSE_PURGE_LENGTH         50  // (mm) Length to extrude after loading.
+  #define ADVANCED_PAUSE_PURGE_LENGTH        150  // (mm) Length to extrude after loading.
                                                   //   Set to 0 for manual extrusion.
                                                   //   Filament can be extruded repeatedly from the Filament Change menu
                                                   //   until extrusion is consistent, and to purge old filament.
@@ -1003,12 +1015,240 @@
   #define FILAMENT_CHANGE_ALERT_BEEPS         10  // Number of alert beeps to play when a response is needed.
   #define PAUSE_PARK_NO_STEPPER_TIMEOUT           // Enable for XYZ steppers to stay powered on during filament change.
 
-  //#define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
-  //#define HOME_BEFORE_FILAMENT_CHANGE           // Ensure homing has been completed prior to parking for filament change
+  #define PARK_HEAD_ON_PAUSE                    // Park the nozzle during pause and filament change.
+  #define HOME_BEFORE_FILAMENT_CHANGE           // Ensure homing has been completed prior to parking for filament change
 
-  //#define FILAMENT_LOAD_UNLOAD_GCODES           // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
+  #define FILAMENT_LOAD_UNLOAD_GCODES           // Add M701/M702 Load/Unload G-codes, plus Load/Unload in the LCD Prepare menu.
   //#define FILAMENT_UNLOAD_ALL_EXTRUDERS         // Allow M702 to unload all extruders above a minimum target temp (as set by M302)
 #endif
+
+// @section tmc
+
+/**
+ * TMC26X Stepper Driver options
+ *
+ * The TMC26XStepper library is required for this stepper driver.
+ * https://github.com/trinamic/TMC26XStepper
+ */
+#if HAS_DRIVER(TMC26X)
+
+  #define X_MAX_CURRENT     1000 // in mA
+  #define X_SENSE_RESISTOR    91 // in mOhms
+  #define X_MICROSTEPS        16 // number of microsteps
+
+  #define X2_MAX_CURRENT    1000
+  #define X2_SENSE_RESISTOR   91
+  #define X2_MICROSTEPS       16
+
+  #define Y_MAX_CURRENT     1000
+  #define Y_SENSE_RESISTOR    91
+  #define Y_MICROSTEPS        16
+
+  #define Y2_MAX_CURRENT    1000
+  #define Y2_SENSE_RESISTOR   91
+  #define Y2_MICROSTEPS       16
+
+  #define Z_MAX_CURRENT     1000
+  #define Z_SENSE_RESISTOR    91
+  #define Z_MICROSTEPS        16
+
+  #define Z2_MAX_CURRENT    1000
+  #define Z2_SENSE_RESISTOR   91
+  #define Z2_MICROSTEPS       16
+
+  #define E0_MAX_CURRENT    1000
+  #define E0_SENSE_RESISTOR   91
+  #define E0_MICROSTEPS       16
+
+  #define E1_MAX_CURRENT    1000
+  #define E1_SENSE_RESISTOR   91
+  #define E1_MICROSTEPS       16
+
+  #define E2_MAX_CURRENT    1000
+  #define E2_SENSE_RESISTOR   91
+  #define E2_MICROSTEPS       16
+
+  #define E3_MAX_CURRENT    1000
+  #define E3_SENSE_RESISTOR   91
+  #define E3_MICROSTEPS       16
+
+  #define E4_MAX_CURRENT    1000
+  #define E4_SENSE_RESISTOR   91
+  #define E4_MICROSTEPS       16
+
+#endif
+
+// @section tmc_smart
+
+/**
+ * To use TMC2130 stepper drivers in SPI mode connect your SPI pins to
+ * the hardware SPI interface on your board and define the required CS pins
+ * in your `pins_MYBOARD.h` file. (e.g., RAMPS 1.4 uses AUX3 pins `X_CS_PIN 53`, `Y_CS_PIN 49`, etc.).
+ * You may also use software SPI if you wish to use general purpose IO pins.
+ *
+ * You'll also need the TMC2130Stepper Arduino library
+ * (https://github.com/teemuatlut/TMC2130Stepper).
+ *
+ * To use TMC2208 stepper UART-configurable stepper drivers
+ * connect #_SERIAL_TX_PIN to the driver side PDN_UART pin with a 1K resistor.
+ * To use the reading capabilities, also connect #_SERIAL_RX_PIN
+ * to PDN_UART without a resistor.
+ * The drivers can also be used with hardware serial.
+ *
+ * You'll also need the TMC2208Stepper Arduino library
+ * (https://github.com/teemuatlut/TMC2208Stepper).
+ */
+#if HAS_TRINAMIC
+
+  #define R_SENSE           0.11  // R_sense resistor for SilentStepStick2130
+  #define HOLD_MULTIPLIER    0.5  // Scales down the holding current from run current
+  #define INTERPOLATE       true  // Interpolate X/Y/Z_MICROSTEPS to 256
+
+  #define X_CURRENT          800  // rms current in mA. Multiply by 1.41 for peak current.
+  #define X_MICROSTEPS        16  // 0..256
+
+  #define Y_CURRENT          800
+  #define Y_MICROSTEPS        16
+
+  #define Z_CURRENT          800
+  #define Z_MICROSTEPS        16
+
+  #define X2_CURRENT         800
+  #define X2_MICROSTEPS       16
+
+  #define Y2_CURRENT         800
+  #define Y2_MICROSTEPS       16
+
+  #define Z2_CURRENT         800
+  #define Z2_MICROSTEPS       16
+
+  #define E0_CURRENT         800
+  #define E0_MICROSTEPS       16
+
+  #define E1_CURRENT         800
+  #define E1_MICROSTEPS       16
+
+  #define E2_CURRENT         800
+  #define E2_MICROSTEPS       16
+
+  #define E3_CURRENT         800
+  #define E3_MICROSTEPS       16
+
+  #define E4_CURRENT         800
+  #define E4_MICROSTEPS       16
+
+  /**
+   * Use software SPI for TMC2130.
+   * The default SW SPI pins are defined the respective pins files,
+   * but you can override or define them here.
+   */
+  //#define TMC_USE_SW_SPI
+  //#define TMC_SW_MOSI       -1
+  //#define TMC_SW_MISO       -1
+  //#define TMC_SW_SCK        -1
+
+  /**
+   * Use Trinamic's ultra quiet stepping mode.
+   * When disabled, Marlin will use spreadCycle stepping mode.
+   */
+  #define STEALTHCHOP
+
+  /**
+   * Monitor Trinamic TMC2130 and TMC2208 drivers for error conditions,
+   * like overtemperature and short to ground. TMC2208 requires hardware serial.
+   * In the case of overtemperature Marlin can decrease the driver current until error condition clears.
+   * Other detected conditions can be used to stop the current print.
+   * Relevant g-codes:
+   * M906 - Set or get motor current in milliamps using axis codes X, Y, Z, E. Report values if no axis codes given.
+   * M911 - Report stepper driver overtemperature pre-warn condition.
+   * M912 - Clear stepper driver overtemperature pre-warn condition flag.
+   * M122 S0/1 - Report driver parameters (Requires TMC_DEBUG)
+   */
+  //#define MONITOR_DRIVER_STATUS
+
+  #if ENABLED(MONITOR_DRIVER_STATUS)
+    #define CURRENT_STEP_DOWN     50  // [mA]
+    #define REPORT_CURRENT_CHANGE
+    #define STOP_ON_ERROR
+  #endif
+
+  /**
+   * The driver will switch to spreadCycle when stepper speed is over HYBRID_THRESHOLD.
+   * This mode allows for faster movements at the expense of higher noise levels.
+   * STEALTHCHOP needs to be enabled.
+   * M913 X/Y/Z/E to live tune the setting
+   */
+  //#define HYBRID_THRESHOLD
+
+  #define X_HYBRID_THRESHOLD     100  // [mm/s]
+  #define X2_HYBRID_THRESHOLD    100
+  #define Y_HYBRID_THRESHOLD     100
+  #define Y2_HYBRID_THRESHOLD    100
+  #define Z_HYBRID_THRESHOLD       3
+  #define Z2_HYBRID_THRESHOLD      3
+  #define E0_HYBRID_THRESHOLD     30
+  #define E1_HYBRID_THRESHOLD     30
+  #define E2_HYBRID_THRESHOLD     30
+  #define E3_HYBRID_THRESHOLD     30
+  #define E4_HYBRID_THRESHOLD     30
+
+  /**
+   * Use stallGuard2 to sense an obstacle and trigger an endstop.
+   * You need to place a wire from the driver's DIAG1 pin to the X/Y endstop pin.
+   * X, Y, and Z homing will always be done in spreadCycle mode.
+   *
+   * X/Y/Z_HOMING_SENSITIVITY is used for tuning the trigger sensitivity.
+   * Higher values make the system LESS sensitive.
+   * Lower value make the system MORE sensitive.
+   * Too low values can lead to false positives, while too high values will collide the axis without triggering.
+   * It is advised to set X/Y/Z_HOME_BUMP_MM to 0.
+   * M914 X/Y/Z to live tune the setting
+   */
+  //#define SENSORLESS_HOMING // TMC2130 only
+
+  #if ENABLED(SENSORLESS_HOMING)
+    #define X_HOMING_SENSITIVITY  8
+    #define Y_HOMING_SENSITIVITY  8
+    #define Z_HOMING_SENSITIVITY  8
+  #endif
+
+  /**
+   * Enable M122 debugging command for TMC stepper drivers.
+   * M122 S0/1 will enable continous reporting.
+   */
+  //#define TMC_DEBUG
+
+  /**
+   * M915 Z Axis Calibration
+   *
+   * - Adjust Z stepper current,
+   * - Drive the Z axis to its physical maximum, and
+   * - Home Z to account for the lost steps.
+   *
+   * Use M915 Snn to specify the current.
+   * Use M925 Znn to add extra Z height to Z_MAX_POS.
+   */
+  //#define TMC_Z_CALIBRATION
+  #if ENABLED(TMC_Z_CALIBRATION)
+    #define CALIBRATION_CURRENT 250
+    #define CALIBRATION_EXTRA_HEIGHT 10
+  #endif
+
+  /**
+   * You can set your own advanced settings by filling in predefined functions.
+   * A list of available functions can be found on the library github page
+   * https://github.com/teemuatlut/TMC2130Stepper
+   * https://github.com/teemuatlut/TMC2208Stepper
+   *
+   * Example:
+   * #define TMC_ADV() { \
+   *   stepperX.diag0_temp_prewarn(1); \
+   *   stepperY.interpolate(0); \
+   * }
+   */
+  #define TMC_ADV() {  }
+
+#endif // TMC2130 || TMC2208
 
 // @section L6470
 
@@ -1018,72 +1258,53 @@
  * The Arduino-L6470 library is required for this stepper driver.
  * https://github.com/ameyer/Arduino-L6470
  */
+#if HAS_DRIVER(L6470)
 
- //#define HAVE_L6470DRIVER
- #if ENABLED(HAVE_L6470DRIVER)
+  #define X_MICROSTEPS      16 // number of microsteps
+  #define X_OVERCURRENT   2000 // maxc current in mA. If the current goes over this value, the driver will switch off
+  #define X_STALLCURRENT  1500 // current in mA where the driver will detect a stall
 
-   //#define X_IS_L6470
-   //#define X2_IS_L6470
-   //#define Y_IS_L6470
-   //#define Y2_IS_L6470
-   //#define Z_IS_L6470
-   //#define Z2_IS_L6470
-   //#define E0_IS_L6470
-   //#define E1_IS_L6470
-   //#define E2_IS_L6470
-   //#define E3_IS_L6470
+  #define X2_MICROSTEPS     16
+  #define X2_OVERCURRENT  2000
+  #define X2_STALLCURRENT 1500
 
-   #define X_MICROSTEPS      16 // number of microsteps
-   #define X_K_VAL           50 // 0 - 255, Higher values, are higher power. Be careful not to go too high
-   #define X_OVERCURRENT   2000 // maxc current in mA. If the current goes over this value, the driver will switch off
-   #define X_STALLCURRENT  1500 // current in mA where the driver will detect a stall
+  #define Y_MICROSTEPS      16
+  #define Y_OVERCURRENT   2000
+  #define Y_STALLCURRENT  1500
 
-   #define X2_MICROSTEPS     16
-   #define X2_K_VAL          50
-   #define X2_OVERCURRENT  2000
-   #define X2_STALLCURRENT 1500
+  #define Y2_MICROSTEPS     16
+  #define Y2_OVERCURRENT  2000
+  #define Y2_STALLCURRENT 1500
 
-   #define Y_MICROSTEPS      16
-   #define Y_K_VAL           50
-   #define Y_OVERCURRENT   2000
-   #define Y_STALLCURRENT  1500
+  #define Z_MICROSTEPS      16
+  #define Z_OVERCURRENT   2000
+  #define Z_STALLCURRENT  1500
 
-   #define Y2_MICROSTEPS     16
-   #define Y2_K_VAL          50
-   #define Y2_OVERCURRENT  2000
-   #define Y2_STALLCURRENT 1500
+  #define Z2_MICROSTEPS     16
+  #define Z2_OVERCURRENT  2000
+  #define Z2_STALLCURRENT 1500
 
-   #define Z_MICROSTEPS      16
-   #define Z_K_VAL           50
-   #define Z_OVERCURRENT   2000
-   #define Z_STALLCURRENT  1500
+  #define E0_MICROSTEPS     16
+  #define E0_OVERCURRENT  2000
+  #define E0_STALLCURRENT 1500
 
-   #define Z2_MICROSTEPS     16
-   #define Z2_K_VAL          50
-   #define Z2_OVERCURRENT  2000
-   #define Z2_STALLCURRENT 1500
+  #define E1_MICROSTEPS     16
+  #define E1_OVERCURRENT  2000
+  #define E1_STALLCURRENT 1500
 
-   #define E0_MICROSTEPS     16
-   #define E0_K_VAL          50
-   #define E0_OVERCURRENT  2000
-   #define E0_STALLCURRENT 1500
+  #define E2_MICROSTEPS     16
+  #define E2_OVERCURRENT  2000
+  #define E2_STALLCURRENT 1500
 
-   #define E1_MICROSTEPS     16
-   #define E1_K_VAL          50
-   #define E1_OVERCURRENT  2000
-   #define E1_STALLCURRENT 1500
+  #define E3_MICROSTEPS     16
+  #define E3_OVERCURRENT  2000
+  #define E3_STALLCURRENT 1500
 
-   #define E2_MICROSTEPS     16
-   #define E2_K_VAL          50
-   #define E2_OVERCURRENT  2000
-   #define E2_STALLCURRENT 1500
+  #define E4_MICROSTEPS     16
+  #define E4_OVERCURRENT  2000
+  #define E4_STALLCURRENT 1500
 
-   #define E3_MICROSTEPS     16
-   #define E3_K_VAL          50
-   #define E3_OVERCURRENT  2000
-   #define E3_STALLCURRENT 1500
-
-#endif // L6470
+#endif
 
 /**
  * TWI/I2C BUS
