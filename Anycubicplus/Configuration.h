@@ -76,10 +76,8 @@
 
 // @section info
 
-// User-specified version info of this build to display in [Pronterface, etc] terminal window during
-// startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
-// build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(Alex, default config)" // Who made the changes.
+// User-specified version info of this build to display in [Pronterface, etc] terminal window during startup. Implementation of an idea by Prof Braino to inform user that any changes made to this build by the user have been successfully uploaded into firmware.
+#define STRING_CONFIG_H_AUTHOR "Alex, 1/7/2019" // Who made the changes.
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 WEBSITE_URL         // will be shown during bootup in line 2
@@ -111,7 +109,6 @@
   #define MOTHERBOARD 33
 #endif
 
-// Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
 #define CUSTOM_MACHINE_NAME "Spooder the Extruder"
 
@@ -567,27 +564,39 @@
 //#define Z_PROBE_SLED
 //#define SLED_DOCKING_OFFSET 5 // The extra distance the X axis must travel to pickup the sled. 0 should be fine but you can push it further if you'd like.
 
-// Z Probe to nozzle (X,Y) offset, relative to (0, 0).
+/* Z Probe to nozzle (X,Y) offset, relative to (0, 0).
 // X and Y offsets must be integers.
 //
 // In the following example the X and Y offsets are both positive:
 // #define X_PROBE_OFFSET_FROM_EXTRUDER 10
 // #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
-//
-//                    +-- BACK ---+
-//                    |                 |
-//                 L |    (+) P     | R <-- probe (20,20)
-//                 E |                 | I
-//                 F |  (-) N (+) | G <-- nozzle (10,10)
-//                 T |                 | H
-//                    |      (-)       | T
-//                    |                 |
-//                   O-- FRONT --+
-//  (0,0)
 
-#define X_PROBE_OFFSET_FROM_EXTRUDER 38     // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER -28   // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0  // Z offset: -below +above  [the nozzle]
+0---------------------------------------------------------0
+
+                  +---BED BACK -----+               
+            BED |            (+)           | BED
+                L  |             P             |  R
+                E  |                            |  I
+                F  |       (-)  N  (+)      | G
+                    |            (-)             |  T
+◄ 75mm ►|                             |
+                    O---BED FRONT ----+
+                              ▲
+                            66mm
+                              ▼
+X---------------------------------------------------------0
+*/
+
+The outer lines is the main frame.
+X on bottom left of the main frame is the Endstops for X and Y
+P = Probe, N=Nozzle
+Probe is 90mm behind the Nozzle
+Y Axis is from Front to Back
+X Axis is from Left to Right
+
+#define X_PROBE_OFFSET_FROM_EXTRUDER 0     // X offset: -left  +right  [of the nozzle]
+#define Y_PROBE_OFFSET_FROM_EXTRUDER -10   // Y offset: -front +behind [the nozzle]
+#define Z_PROBE_OFFSET_FROM_EXTRUDER -3.5  // Z offset: -below +above  [the nozzle]
 
 // X and Y axis travel speed (mm/m) between probes
 #define XY_PROBE_SPEED 4000
