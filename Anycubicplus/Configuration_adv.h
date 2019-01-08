@@ -266,11 +266,6 @@
   #define INVERT_CASE_LIGHT false             // Set true if Case Light is ON when pin is LOW
   #define CASE_LIGHT_DEFAULT_ON true          // Set default power-up state on
   #define CASE_LIGHT_DEFAULT_BRIGHTNESS 105   // Set default power-up brightness (0-255, requires PWM pin)
-  //#define MENU_ITEM_CASE_LIGHT              // Add a Case Light option to the LCD main menu
-  //#define CASE_LIGHT_USE_NEOPIXEL           // Use Neopixel LED as case light, requires NEOPIXEL_LED.
-  #if ENABLED(CASE_LIGHT_USE_NEOPIXEL)
-    #define CASE_LIGHT_NEOPIXEL_COLOR { 255, 255, 255, 255 } // { Red, Green, Blue, White }
-  #endif
 #endif
 
 //===========================================================================
@@ -1030,7 +1025,7 @@
  * The TMC26XStepper library is required for this stepper driver.
  * https://github.com/trinamic/TMC26XStepper
  */
-#if HAS_DRIVER(TMC26X)
+#if ENABLED(HAVE_TMC26XDRIVER)
 
   #define X_MAX_CURRENT     1000 // in mA
   #define X_SENSE_RESISTOR    91 // in mOhms
@@ -1258,7 +1253,7 @@
  * The Arduino-L6470 library is required for this stepper driver.
  * https://github.com/ameyer/Arduino-L6470
  */
-#if HAS_DRIVER(L6470)
+#if ENABLED(HAVE_L6470DRIVER)
 
   #define X_MICROSTEPS      16 // number of microsteps
   #define X_OVERCURRENT   2000 // maxc current in mA. If the current goes over this value, the driver will switch off
